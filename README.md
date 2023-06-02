@@ -47,6 +47,9 @@ Démarrer le serveur en développement
 ```bash
 
 ==== DEMARRAGE REEL DU PROJET ============
+$ python manage.py createsuperuser
 $ python manage.py makemigrations
 $ python manage.py migrate
 $ python manage.py runserver
+
+#ENSUITE CONNECTEZ-VOUS AVEC VOTRE SUPERUSER
