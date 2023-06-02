@@ -1,0 +1,207 @@
+{% extends 'partials/_base-page.html' %}
+
+{% block title %}APP LIVREURS {% endblock %}
+
+{% load attente_colis_tags %}
+
+{% block content %}
+    <div class="container-fluid mb-5" id="body-content">
+        <div class="row">
+            <div class="col-md-2 col-sm-12"></div>
+            <div class="col-md-8 col-sm-12">
+                {% include "partials/flash-message-success.html" %}
+
+                <h1 class="content-title _bar">Livreur n° 25632</h1>
+                <div class="_content">
+                    <div class="form">
+                        <form action="/livreurs/{{deliveryman.id}}/update" method="post">
+                            {% csrf_token %}
+                            <h3 class="title">Informations générales sur le livreur</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Nom du livreur</label>
+                                        <input type="text"
+                                        name="nom"
+                                            class="form-control"
+                                            id="exampleFormControlInput1"
+                                            value="{{deliveryman.nom}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Prénom du livreur</label>
+                                        <input type="text"
+                                        name="prenom"
+                                            class="form-control"
+                                            id="exampleFormControlInput1"
+                                            value="{{deliveryman.prenom}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Téléphone du livreur</label>
+                                        <input type="phone"
+                                        name="phone"
+                                            class="form-control"
+                                            id="exampleFormControlInput1"
+                                            value="{{deliveryman.phone}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Email du livreur</label>
+                                        <input type="email"
+                                        name="email"
+                                            class="form-control"
+                                            id="exampleFormControlInput1"
+                                            value="{{deliveryman.email}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Agence de livraison</label>
+                                        <input type="text"
+                                        name="agence"
+                                            class="form-control"
+                                            id="exampleFormControlInput1"
+                                            value="{{deliveryman.agence}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Status</label>
+                                        <select
+                                        name="status"
+                                            class="form-select form-control"
+                                            onfocus='this.size=10;'
+                                            onblur='this.size=0;'
+                                            onchange='this.size=1;'
+                                            onchange='this.blur();'>
+                                            {% if deliveryman.status %}
+                                            <option class="text-success" value="1">Actif</option>
+                                            <option value="0">Inactif</option>
+                                            {% else %}
+                                            <option class="text-danger" value="0">Inactif</option>
+                                            <option value="1">Actif</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn submit-btn">MODIFIER</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mt-5">
+                        <h3 class="title">Activités</h3>
+
+                        <div class="badge-block">
+                            <div class="badge shadow">
+                                <strong>{{deliveryman.colis_geres}}</strong> <br> <br>
+                                <span class="">COLIS GÉRÉS</span>
+                            </div>
+                            <div class="badge shadow last">
+                                <!-- UTILISATION du tag **attente_colis** POUR CALCULER LE NOMBRE DE COLIS EN ATTENTE-->
+                                <strong>{% attente_colis deliveryman.colis_a_gerer deliveryman.colis_geres %}</strong> <br> <br>
+                                <span class="">COLIS EN ATTENTE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <h3 class="title">Colis affectés et en attente</h3>
+                        {% if his_deliveries %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="">
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Expéditeur</th>
+                                        <th scope="col">STATUT</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for his_deliverie in his_deliveries %}
+                                    <tr>
+                                        <th scope="row">{{forloop.counter}}</th>
+                                        <td>{{his_deliverie.nomEmetteur}} {{his_deliverie.prenomEmetteur}}</td>
+                                        <td>
+                                            {% if his_deliverie.is_enlevement %}
+                                            <strong class="text-dark">Enlèvement</strong>
+                                            {% elif his_deliverie.is_acheminement %}
+                                            <strong class="text-dark">Achéminement</strong>
+                                            {% elif his_deliverie.is_reception %}
+                                            <strong class="text-dark">Reception</strong>
+                                            {% elif his_deliverie.is_termine %}
+                                            <strong class="text-success">Terminé</strong>
+                                            {% else %}
+                                            <strong class="text-danger">Lancement</strong>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn action">voir</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                       <div class="text-center">
+                            <h3 class="text-danger mt-5">Aucun colis affecté!</h3>
+                       </div>
+                       {% endif %}
+                    </div>
+
+                    <div class="mt-5 colis-affectation">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="_title">AFFECTER A UN COLIS</h1>
+                                <form method="POST" action="/livreurs/affect_to_delivery/{{deliveryman.id}}">
+                                    {% csrf_token %}
+                                    <div class="input-block">
+                                        <h3 class="__t">Choisissez le colis</h3>
+                                        <select name="deliveryId"
+                                            class="form-select form-control"
+                                            onfocus='this.size=10;'
+                                            onblur='this.size=0;'
+                                            onchange='this.size=1;
+                                            this.blur();'>
+                                           
+                                            {% for deliverie in alldeliveries %}
+                                                {% if deliverie.deliveryMan == deliveryman.id %}
+                                                <option selected style="color:green!important">
+                                                    <span> __CODE:: <strong class="text-danger">{{deliverie.follow_code}}</strong> </span> <br>
+                                                </option>
+                                                {% else %}
+                                                <option class="text-dark" value="{{deliverie.id}}">
+                                                    __CODE:: <strong class="text-danger">{{deliverie.follow_code}}</strong>
+                                                </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="text-center">
+                                        <button class="btn submit-btn">ENREGISTRER</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12"></div>
+        </div>
+
+    </div>
+{% endblock %}

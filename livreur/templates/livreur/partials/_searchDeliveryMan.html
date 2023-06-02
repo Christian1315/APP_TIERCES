@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        {% include "partials/flash-message-success.html" %}
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+<div class="searching--block">
+    <form method="post" action="/livreur/search" class>
+        {% csrf_token %}
+        <span class="input-group mb-3">
+            {% csrf_token %}
+            <input type="text" name="searching" class="form-control"
+                placeholder="Numéro d'identification du colis"
+                aria-describedby="button-addon2">
+            <button class="btn" type="submit" id="button-addon2">Trouver</button>
+        </span>
+    </form>
+    <button class="btn add--livreur text-center" data-bs-toggle="modal"
+        data-bs-target="#addDeliveryman">Ajouter</button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="addDeliveryman" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter un livreur</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            {% include 'livreur/partials/_addLivreurModal.html' %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,157 @@
+{% extends 'colis/partials/_base-page.html' %}
+
+{% block title %}COLIS {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mb-5" id="body-content">
+    <div class="row">
+        <h1 class="content-title">Tout les colis EN COURS</h1>
+        <div class="col-md-3 col-sm-12"></div>
+        <div class="col-md-6 col-sm-12">
+            {% include "colis/partials/_searchDelivery.html" %}
+        </div>
+        <div class="col-md-3 col-sm-12"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- ======= AVEC PAGINATION ======-->
+            {% if page_obj_livraison %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class>
+                            <th scope="col">ID</th>
+                            <th scope="col">Expéditeur</th>
+                            <th scope="col">STATUS</th>
+                            <th scope="col">AFFECTER A</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for livraison in page_obj_livraison %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td>{{livraison.prenomEmetteur}} {{livraison.nomEmetteur}}</td>
+                            <td>
+                                {% if livraison.is_enlevement %}
+                                <strong class="text-dark">Enlèvement</strong>
+                                {% elif livraison.is_acheminement %}
+                                <strong class="text-dark">Achéminement</strong>
+                                {% elif livraison.is_reception %}
+                                <strong class="text-dark">Reception</strong>
+                                {% elif livraison.is_termine %}
+                                <strong class="text-success">Terminé</strong>
+                                {% else %}
+                                <strong class="text-danger">Lancement</strong>
+                                {% endif %}
+                            </td>
+                            <td>{{livraison.prenomDestinataire}} {{livraison.nomDestinataire}}</td>
+                            <td>
+                                <a href="/colis/livraison-show/{{livraison.id}}/{{delivery_man_id}}" class="btn action">voir</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class>
+                <div class="row pagination">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <span class="step-links">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    {% if page_obj_livraison.has_previous %}
+                                    <a class="page-link" href="?page=1">&laquo;
+                                    </a>
+                                    <a class="page-link"
+                                        href="?page={{ page_obj_livraison.previous_page_number }}"
+                                        aria-label="Previous">
+                                        {{ page_obj_livraison.previous_page_number}}
+                                    </a>
+                                    {% endif %}
+                                </li>
+
+                                <li class="page-item">
+                                    {% if page_obj_livraison.has_next %}
+                                    <a class="page-link"
+                                        href="?page={{ page_obj_livraison.number }}"
+                                        aria-label="Next">
+                                        {{ page_obj_livraison.number }}
+                                    </a>
+
+                                    <a class="page-link"
+                                        href="?page={{ page_obj_livraison.next_page_number }}"
+                                        aria-label="Next">
+                                        &raquo;
+                                    </a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ======= SANS PAGINATION ======-->
+            {% if livraison %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr class>
+                            <th scope="col">ID</th>
+                            <th scope="col">Code de suivi</th>
+                            <th scope="col">Expéditeur</th>
+                            <th scope="col">DESTINATAIRE</th>
+                            <th scope="col">STATUS</th>
+                            <th scope="col">DATE</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>{{livraison.follow_code}}</td>
+                            <td>{{livraison.prenomEmetteur}}
+                                {{livraison.nomEmetteur}}</td>
+                            <td>{{livraison.prenomDestinataire}}
+                                {{livraison.nomDestinataire}}</td>
+                            <td>
+                                {% if livraison.is_enlevement %}
+                                <strong class="text-dark">Enlèvement</strong>
+                                {% elif livraison.is_acheminement %}
+                                <strong class="text-dark">Achéminement</strong>
+                                {% elif livraison.is_reception %}
+                                <strong class="text-dark">Reception</strong>
+                                {% elif livraison.is_termine %}
+                                <strong class="text-success">Terminé</strong>
+                                {% else %}
+                                <strong class="text-danger">Lancement</strong>
+                                {% endif %}
+                            </td>
+                            <td>{{livraison.created_date}}</td>
+                            <td>
+                                <a href="/colis/livraison-show/{{livraison.id}}/{{delivery_man_id}}"
+                                    class="btn action">voir</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            {% if livraisons_count == 0 %}
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <h4 class="text-center text-danger">Aucune livraison ne vous a été affectée!!</h4>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

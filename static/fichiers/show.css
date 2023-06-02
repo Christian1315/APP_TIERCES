@@ -1,0 +1,168 @@
+
+#body-content .content-title._bar {
+    background-color: #0B9444;
+    border-radius: 10px;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+
+#body-content .title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #0B9444;
+}
+
+#body-content ._content {
+    padding: 0px 60px;
+}
+
+li.page-item{
+    display: flex!important;
+}
+
+ul.pagination{
+    justify-content: center!important;
+    text-align: center!important;
+}
+
+ul.pagination .page-item .page-link{
+    margin-right: 10px;
+    border-radius: 10px!important;
+    background-color: #0B9444;
+    color: #fff;
+}
+a.page-link:focus{
+    border-color: rgba(11, 148, 68, 0.3)!important;
+    box-shadow: 0 0 0 .25rem rgba(11, 148, 68, .25)!important;
+}
+
+@media screen and (max-width:892px) {
+    #body-content ._content {
+        padding: 0px;
+    }
+}
+
+
+#body-content form .form-control,
+#body-content form option {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-size: 20px;
+}
+
+#body-content .submit-btn {
+    background-color: #0B9444;
+    color: #fff;
+    font-size: 17px;
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 5px 30px;
+    margin-top: 20px;
+}
+
+#body-content .badge-block {
+    display: flex;
+}
+
+
+#body-content .badge-block .badge {
+    background-color: #ffffff99;
+    text-align: center;
+    padding: 10px 30px;
+    margin-right: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width:474px) {
+    #body-content .title {
+        text-align: center;
+    }
+
+    #body-content .badge-block {
+        display: list-item;
+        list-style-type: none;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #body-content .badge-block .badge {
+        margin-block: 10px;
+        width: 100%;
+        height: auto;
+    }
+}
+
+#body-content .badge-block .badge strong {
+    color: #0B9444;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#body-content .badge-block .badge span {
+    color: #000000;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+@media screen and (max-width:255px) {
+    #body-content .badge-block .badge span {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width:204px) {
+    #body-content .badge-block .badge span {
+        font-size: 10px;
+    }
+}
+
+#body-content .colis-affectation {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    justify-content: center;
+}
+
+#body-content .colis-affectation ._title {
+    color: #F11C33;
+    font-size: 25px;
+    font-weight: 900!important;
+}
+
+#body-content .colis-affectation .input-block {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    align-items: center;
+}
+
+#body-content .colis-affectation .input-block .__t {
+    color: #0B9444;
+    font-size: 20px;
+    font-weight: 900!important;
+}
+
+#body-content .colis-affectation .input-block .form-select {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 50%;
+    margin-left: 10px;
+}
+
+@media screen and (max-width:436px) {
+    #body-content .colis-affectation .input-block {
+        display: list-item;
+        list-style-type: none;
+        text-align: center;
+        justify-content: center;
+    }
+
+    #body-content .colis-affectation .input-block .form-select {
+        display: list-item;
+        list-style-type: none;
+        width: 100%;
+        margin-left: 0px;
+    }
+}

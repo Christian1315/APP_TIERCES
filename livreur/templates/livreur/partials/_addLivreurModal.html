@@ -1,0 +1,86 @@
+<div class="modal-body">
+    <form action="/livreurs/addDeliveryMan" method="post">
+        {% csrf_token %}
+        <h3 class="title">Informations générales sur le livreur</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="text" name="nom" required
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Nom du livreur">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="text" name="prenom" required
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Prénom du livreur">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="phone" name="phone" required
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Téléphone du livreur">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="email" name="email" required
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Email du livreur">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="text" name="agence" required
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="Agence de livraison">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <select name="status" required
+                        class="form-select form-control text-center"
+                        onfocus='this.size=10;'
+                        onblur='this.size=0;'
+                        onchange='this.size=1;'
+                        onchange='this.blur();'>
+                        <option value="">-- Status --</option>
+                        <option value="1">Actif</option>
+                        <option value="0">Inactif</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="password" name="password" required
+                        class="form-control"
+                        id="exampleFormControlInput1"
+                        placeholder="">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <input type="password" required name="confirm_password" id="" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="btn submit-btn">ENREGISTRER</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,257 @@
+{% extends 'partials/_base-page.html' %}
+
+{% block title %}LIVRAISONS DETAIL {% endblock %}
+
+{% load get_livreur_by_id_tags %}
+
+
+{% block content %}
+
+<div class="container-fluid mb-5" id="body-content">
+    <div class="row">
+        <div class="col-md-2 col-sm-12"></div>
+        <div class="col-md-8 col-sm-12">
+            {% include "partials/flash-message-success.html" %}
+            <h1 class="content-title">DETAILS DE LA LIVRAISON {{identifiant}} </h1>
+            <h1 class="content-title _bar">COMMANDE N° 202533</h1>
+            <div class="_content">
+                <div class="form">
+                    <h3 class="title">Informations expéditeurs</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Nom de d'expéditeur</label>
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Nom de d'expéditeur"
+                                    value="{{livraison.nomEmetteur}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Prénom de d'expéditeur</label>
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Prénom de d'expéditeur"
+                                    value="{{livraison.prenomEmetteur}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Télephone</label>
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Téléphone"
+                                    value="{{livraison.telephoneEmetteur}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Lieu du colis</label>
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Lieu du colis"
+                                    value="{{livraison.quartierEmetteur}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Type de colis</label>
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Type de colis"
+                                    value="{{livraison.typeColis}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Contenu du colis</label>
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Contenu du colis"
+                                    value="{{livraison.description}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="title">Informations destinataires</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Nom du destinataire</label>
+
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Nom du destinataire"
+                                    value="{{livraison.nomDestinataire}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Prénom du destinataire</label>
+
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Prénom du destinataire"
+                                    value="{{livraison.prenomDestinataire}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Téléphone du destinataire</label>
+
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Téléphone du destinataire"
+                                    value="{{livraison.telephoneDestinataire}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for>Email du destinataire</label>
+
+                                <input type="email" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Email du destinataire"
+                                    value="{{livraison.emailDestinataire}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="title mt-3">Point relais choisi</h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for>Nom du point relais</label>
+                                
+                                <!-- UTILISATION du tag **getRelayPointName** POUR RECUPERER LE NOM DU POINT RELAIS-->
+                                <input type="text" disabled
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="{% getRelayPointName livraison.pointRelais %}"
+                                    >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 colis-affectation">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="_title">AFFECTER A UN LIVREUR</h1>
+                                <form method="post" action="/afect_to_deliveryMan/{{livraison.id}}">
+                                    {% csrf_token %}
+                                    {% if identifiant %}
+                                    <input type="hidden" name="identifiant" value="{{identifiant}}">
+                                    {% endif %}
+                                    <div class="input-block">
+                                        <h3 class="__t">Choisissez le livreur</h3>
+                                        {% if deliveryMans %}
+                                        <select name="deliverymanId"
+                                            class="form-select form-control"
+                                            onfocus='this.size=10;'
+                                            onblur='this.size=0;'
+                                            onchange='this.size=1;
+                                                        this.blur();'>
+
+
+                                            {% if not livraison.deliveryMan %}
+                                            <option selected>Sélectionnez le livreur</option>
+                                            {% else %}
+                                            <option class="text-dark" value="{{livraison.deliveryMan}}">
+                                                {% getLivreur livraison.deliveryMan %}
+                                            </option>
+                                            {% endif %}
+
+                                            {% for deliveryman_ in deliveryMans %}
+                                                <option class="text-dark" value="{{deliveryman_.id}}">
+                                                    {{deliveryman_.nom}} {{deliveryman_.prenom}}
+                                                </option>
+                                            {% endfor %}
+
+                                        </select>
+                                        {% else %}
+                                        <span class="text-dark" style="margin-left:20px">
+                                            Aucun livreur disponible
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-center">
+                                        {% if deliveryMans %}
+                                        <button class="btn submit-btn">ENREGISTRER</button>
+                                        {% else %}
+                                        <a style="cursor:grab" class="btn submit-btn">ENREGISTRER</a> <br><br>
+                                        <span class="text-danger">Action bloquée</span>
+                                        {% endif %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 colis-affectation">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="_title">STATUT DE LA LIVRAISON</h1>
+                                <form method="post" action="/change_delivery_statut/{{livraison.id}}">
+                                    {% csrf_token %}
+                                    {% if identifiant %}
+                                    <input type="hidden" name="identifiant" value="{{identifiant}}">
+                                    {% endif %}
+                                    <div class="input-block">
+                                        <h3 class="__t">Statut de la livraison</h3>
+                                        <select name="delivery_status"
+                                            class="form-select form-control"
+                                            onfocus='this.size=10;'
+                                            onblur='this.size=0;'
+                                            onchange='this.size=1;this.blur();'>
+                                                {% if livraison.is_lancement %}
+                                                <option class="text-success" selected value="is_lancement">Lancement</option>
+                                                {% elif livraison.is_enlevement %}
+                                                <option class="text-success" selected value="is_enlevement">Enlèvement</option>
+                                                {% elif livraison.is_acheminement %}
+                                                <option class="text-success" selected value="is_acheminement">Achéminement</option>
+                                                {% elif livraison.is_reception %}
+                                                <option class="text-success" selected value="is_reception">Réception</option>
+                                                {% elif livraison.is_termine %}
+                                                <option class="text-success" selected value="is_termine">Terminé</option>
+                                                {% else %}
+                                                <option selected>Sélection du statut de la livraison</option>
+                                                {% endif %}
+                                                {% for deliveryStatu in deliveryStatus %}
+                                                    <option value="{{deliveryStatu.id}}">{{deliveryStatu.title}}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="text-center">
+                                        <button class="btn submit-btn">ENREGISTRER</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-12"></div>
+    </div>
+
+</div>
+{% endblock %}

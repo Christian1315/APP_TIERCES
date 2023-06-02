@@ -1,0 +1,198 @@
+{% extends 'pointRelais/partials/_base-page.html' %}
+
+{% block title %}POINT RELAIS DETAIL {% endblock %}
+{% load attente_colis_tags %}
+
+{% block content %}
+
+<div class="container-fluid mb-5" id="body-content">
+    <div class="row">
+        <div class="col-md-2 col-sm-12"></div>
+        <div class="col-md-8 col-sm-12">
+            <h1 class="content-title">LES POINT RELAIS </h1>
+            <h1 class="content-title _bar">DETAILS SUR LE point relais</h1>
+            <div class="_content">
+                <div class="form">
+                    <form action="/pointRelais/{{ce_pointRelai.id}}/{{identifiant}}/update" method="POST">
+                        {% csrf_token %}
+                        {% include "partials/flash-message-success.html" %}
+                        <h3 class="title">Informations générales sur le livreur</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text"
+                                        name="nom"
+                                        value="{{ce_pointRelai.nom}}"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Nom du point relais">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text"
+                                        name="pays"
+                                        value="{{ce_pointRelai.pays}}"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Pays du point relais">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text"
+                                        name="departement"
+                                        value="{{ce_pointRelai.departement}}"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Département du point relais">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text"
+                                        name="commune"
+                                        value="{{ce_pointRelai.commune}}"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Commune du point relais">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text"
+                                        name="arrondissement"
+                                        value="{{ce_pointRelai.arrondissement}}"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Arrondissement du point relais">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text"
+                                        name="quartier"
+                                        value="{{ce_pointRelai.quartier_id}}"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Quartier du point relais">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="col-md-12">
+                                    <textarea class="form-control"
+                                        name="localisation"
+                                        id="" cols="30" rows="5"
+                                        placeholder="">{{ce_pointRelai.localisation}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12"></div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="mb-3">
+                                    <select
+                                        name="status"
+                                        class="form-select form-control"
+                                        onfocus='this.size=10;'
+                                        onblur='this.size=0;'
+                                        onchange='this.size=1;
+                                        this.blur();'>
+                                        <option selected>{{ce_pointRelai.status}}</option>
+                                        <option value="Actif">Actif</option>
+                                        <option value="Inactif">Inactif</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12"></div>
+                        </div>
+
+                        <div class="text-center">
+                            {% if user.is_authenticated %}
+                            <button class="btn submit-btn">ENREGISTRER</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="title">Activités</h3>
+
+                    <div class="badge-block">
+                        <div class="badge shadow">
+                            <strong>{{ce_pointRelai.colis_geres}}</strong> <br> <br>
+                            <span class="">COLIS GÉRÉS</span>
+                        </div>
+                        <div class="badge shadow last">
+                            <!-- UTILISATION du tag **attente_colis** POUR CALCULER LE NOMBRE DE COLIS EN ATTENTE-->
+                            <strong> {% attente_colis ce_pointRelai.colis_a_gerer ce_pointRelai.colis_geres %} </strong> <br> <br>
+                            <span class="">COLIS EN ATTENTE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="title">Colis affectés et en attente</h3>
+                    {% if RP_DELIVERIES %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="">
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Expéditeur</th>
+                                    <th scope="col">STATUT</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for RP_DELIVERIE in RP_DELIVERIES %}
+                                <tr>
+                                    <th scope="row">{{forloop.counter}}</th>
+                                    <td>{{RP_DELIVERIE.nomEmetteur}} {{RP_DELIVERIE.prenomEmetteur}}</td>
+                                    <td>
+                                        {% if RP_DELIVERIE.is_lancement %}
+                                        <strong class="text-danger">Lancement</strong>
+                                        {% elif RP_DELIVERIE.is_enlevement %}
+                                        <strong class="text-success">Enlèvement</strong>
+                                        {% elif RP_DELIVERIE.is_acheminement %}
+                                        <strong class="text-success">Achéminement</strong>
+                                        {% elif RP_DELIVERIE.is_reception %}
+                                        <strong class="text-success">Réception</strong>
+                                        {% elif RP_DELIVERIE.is_termine %}
+                                        <strong class="text-success">Terminé</strong>
+                                        {% else %}
+                                        <strong class="text-danger">Lancement</strong>
+                                        {% endif %}
+
+                                    </td>
+                                    <td>
+                                        <a href="/livraison/{{RP_DELIVERIE.id}}/{{identifiant}}/detail" class="btn action">voir</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <h4 class="text-danger">Aucun colis affecté!!</h4>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-12"></div>
+    </div>
+
+</div>
+{% endblock %}

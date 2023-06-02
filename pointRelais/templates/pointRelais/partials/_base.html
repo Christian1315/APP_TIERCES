@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="{% static 'fichiers/img/Favicon.png' %}"
+            type="image/x-icon">
+        <link rel="stylesheet" href="{% static 'fichiers/style.css' %}">
+        <link rel="stylesheet" href="{% static 'fichiers/show.css' %}">
+        <link rel="stylesheet" href="{% static 'fichiers/bootstrap.css' %}">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body class="plateforme">
+
+        <div class="container-fluid" id="header">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="nav">
+                        <a href="/" class>
+                            <img class="img-fluid logo"
+                                src="{% static 'fichiers/img/FedRelay.png' %}"
+                                alt class>
+                        </a>
+                        <div class="nav--actions">
+                            <img class="notification img-fluid"
+                                src="{% static 'fichiers/img/notification.png' %}"
+                                alt
+                                srcset>
+                            <a href="https://www.fedrelay.com/" class="btn deconnexion">
+                                <img class="export img-fluid"
+                                    src="{% static 'fichiers/img/Export.png' %}"
+                                    alt
+                                    srcset>
+                                Allez sur le site web
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock content %}
+
+        <div class="container-fluid fixed-bottom" id="footer">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p class>© 2023 - Tout droit réservé à Innov'Prime</p>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'fichiers/bootstrap.bundle.js'% }"></script>
+        
+    </body>
+</html>

@@ -1,0 +1,11 @@
+.idea
+# virtual environments
+env*/
+
+app/migrations/
+colis/migrations/
+livreur/migrations/
+pointRelais/migrations/
+
+db.sqlite3
+

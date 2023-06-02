@@ -1,0 +1,241 @@
+{% extends 'partials/_base-page.html' %}
+
+{% block title %}LIVRAISONS DETAIL {% endblock %}
+
+{% load get_livreur_by_id_tags %}
+
+{% block content %}
+
+<div class="container-fluid mb-5" id="body-content">
+    <div class="row">
+        <div class="col-md-2 col-sm-12"></div>
+        <div class="col-md-8 col-sm-12">
+            {% include "partials/flash-message-success.html" %}
+            <h1 class="content-title">DETAILS DE LA LIVRAISON</h1>
+            <h1 class="content-title _bar">COMMANDE N° 202533</h1>
+            <div class="_content">
+                <form class="form" action="/addDelivery" method="POST">
+                    {% csrf_token %}
+                    <h3 class="title">Informations expéditeurs</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="nomEmetteur"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Nom de d'expéditeur"
+                                    value="{{livraison.nomEmetteur}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    class="form-control"
+                                    name="prenomEmetteur"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Prénom de d'expéditeur"
+                                    value="{{livraison.prenomEmetteur}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="telephoneEmetteur"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Téléphone"
+                                    value="{{livraison.telephoneEmetteur}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="lieuColis"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Lieu du colis"
+                                    value="{{livraison.lieuColis}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="typeColis"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Type de colis"
+                                    value="{{livraison.typeColis}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="description"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Contenu du colis"
+                                    value="{{livraison.description}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="title">Informations destinataires</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="nomDestinataire"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Nom du destinataire"
+                                    value="{{livraison.nomDestinataire}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="prenomDestinataire"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Prénom du destinataire"
+                                    value="{{livraison.prenomDestinataire}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text"
+                                    required
+                                    name="telephoneDestinataire"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Téléphone du destinataire"
+                                    value="{{livraison.telephoneDestinataire}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="email"
+                                    required
+                                    name="emailDestinataire"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Email du destinataire"
+                                    value="{{livraison.emailDestinataire}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="title mt-3">Point relais choisi</h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                {% if RELAYS_POINTS %}
+                                <select name="pointRelais"
+                                    required
+                                    class="form-select form-control"
+                                    onfocus='this.size=10;'
+                                    onblur='this.size=0;'
+                                    onchange='this.size=1;
+                                                this.blur();'>
+                                    {% for RELAYS_POINT in RELAYS_POINTS %}
+                                        <option class="text-dark" value="{{RELAYS_POINT.id}}">
+                                            {{RELAYS_POINT.nom}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                
+                                {% else %}
+                                <input type="text" disabled
+                                    required
+                                    name="pointRelais"
+                                    class="form-control"
+                                    id="exampleFormControlInput1"
+                                    placeholder="Aucun point relais disponible">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 colis-affectation">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="_title">AFFECTER A UN LIVREUR</h1>
+                                <div class="input-block">
+                                    <h3 class="__t">Choisissez le livreur</h3>
+                                    {% if deliveryMans %}
+                                    <select name="deliverymanId"
+                                        class="form-select form-control"
+                                        onfocus='this.size=10;'
+                                        onblur='this.size=0;'
+                                        onchange='this.size=1;
+                                                        this.blur();'>
+                                            {% for deliveryman_ in deliveryMans %}
+                                            <option class="text-dark" value="{{deliveryman_.id}}">
+                                                {{deliveryman_.nom}} {{deliveryman_.prenom}}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                    <span class="text-dark" style="margin-left:20px">
+                                        Aucun livreur disponible
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 colis-affectation">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="_title">STATUT DE LA LIVRAISON</h1>
+                                <div class="input-block">
+                                    <h3 class="__t">Statut de la livraison</h3>
+                                    <select name="delivery_status"
+                                        class="form-select form-control"
+                                        onfocus='this.size=10;'
+                                        onblur='this.size=0;'
+                                        onchange='this.size=1;this.blur();'>
+                                        <option selected>Sélection du statut de la livraison</option>
+                                        {% for deliveryStatu in deliveryStatus %}
+                                        <option value="{{deliveryStatu.id}}">{{deliveryStatu.title}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if RELAYS_POINTS %}
+                    <div class="text-center">
+                        <button class="btn submit-btn">AJOUTER</button>
+                    </div>
+                    {% else %}
+                    <div class="text-center">
+                        <a style="cursor: grabbing;" class="btn submit-btn">AJOUTER</a> <br> <br>
+                        <span class="text-danger">Veuillez ajouter des points relais avant d'effectuer cette opération!</span>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-12"></div>
+    </div>
+
+</div>
+{% endblock %}

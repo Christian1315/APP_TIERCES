@@ -1,0 +1,26 @@
+{% extends 'colis/partials/_base.html' %}
+
+{% block title %}APP COLIS {% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="body-content">
+    <div class="row py-5">
+        <h1 class="content-title">ACCEDER AU PANEL DES COLIS</h1>
+        <div class="col-md-4 col-sm-3"></div>
+        <div class="col-md-4 col-sm-6">
+            {% include "partials/flash-message-danger.html" %}
+            <form action="/colis/login" method="POST">
+                {% csrf_token %}
+                <div class="my-3">
+                    <input type="password" name="password" placeholder="Mot de passe" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn submit-btn">SE CONNECTER</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 col-sm-3"></div>
+    </div>
+</div>
+{% endblock %}

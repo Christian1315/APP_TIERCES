@@ -1,0 +1,12 @@
+{% include "partials/flash-message-success.html" %}
+<form method="post" action="/colis/search" class="searching--block">
+    {% csrf_token %}
+    <span class="input-group mb-3">
+        {% csrf_token %}
+        <input type="hidden" name="delivery_man_id" value="{{delivery_man_id}}">
+        <input type="text" name="searching" class="form-control"
+            placeholder="Numéro d'identification du colis"
+            aria-describedby="button-addon2">
+        <button class="btn" type="submit" id="button-addon2">Trouver</button>
+    </span>
+</form>

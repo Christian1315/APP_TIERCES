@@ -1,0 +1,28 @@
+{% include "partials/flash-message-success.html" %}
+
+<div class="searching--block">
+    {% if user.is_authenticated %}
+    <form method="post" action="/pointRelais/{{user}}/search" class>
+        {% csrf_token %}
+        <span class="input-group mb-3">
+            {% csrf_token %}
+            <input type="text" name="searching" class="form-control"
+                placeholder="Identifiant du point relais"
+                aria-describedby="button-addon2">
+            <button class="btn" type="submit" id="button-addon2">Trouver</button>
+        </span>
+    </form>
+    <a href="/pointRelais/addPr" class="btn add--livreur text-center" >Ajouter un un Point Relais</a>
+    {% else %}
+    <form method="post" action="/pointRelais/{{identifiant}}/search" class>
+        {% csrf_token %}
+        <span class="input-group mb-3">
+            {% csrf_token %}
+            <input type="text" name="searching" class="form-control"
+                placeholder="Identifiant du point relais"
+                aria-describedby="button-addon2">
+            <button class="btn" type="submit" id="button-addon2">Trouver </button>
+        </span>
+    </form>
+    {% endif %}
+</div>

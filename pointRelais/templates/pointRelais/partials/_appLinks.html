@@ -1,0 +1,29 @@
+{% if user.is_authenticated %}
+<div class="container-fluid" id="tags">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tags">
+                <a href="/deliveries" class="btn">LIVRAISONS</a>
+                <a href="/colis" class="btn">COLIS</a>
+                <a href="/livreurs" class="btn">LIVREURS</a>
+                <a href="/pointRelais/{{user}}/pointRelais" class="btn last">POINTS RELAIS</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="container-fluid" id="tags">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tags">
+                <button disabled class="btn">LIVRAISONS</button>
+                <button disabled class="btn">COLIS</button>
+                <button disabled class="btn">LIVREURS</button>
+                <a href="/pointRelais/{{identifiant}}/pointRelais" class="btn last">POINTS RELAIS</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}

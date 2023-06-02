@@ -1,0 +1,189 @@
+{% extends 'pointRelais/partials/_base-page.html' %}
+
+{% block title %}AJOUT POINT RELAIS DETAIL {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mb-5" id="body-content">
+    <div class="row">
+        <div class="col-md-2 col-sm-12"></div>
+        <div class="col-md-8 col-sm-12">
+            {% include "partials/flash-message-success.html" %}
+
+            <h1 class="content-title">DETAILS SUR LE point relais</h1>
+            <h1 class="content-title _bar">POINT RELAIS n° 25632</h1>
+            <div class="_content">
+                <div class="form">
+                    <form action="/pointRelais/addPr" method="POST">
+                        {% csrf_token %}
+                        <h3 class="title">Informations générales sur le point relais</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text" required
+                                        name = "nom"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Nom du point relais">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text" required
+                                        name="pays"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Pays du point relais">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <select required
+                                    name="departement"
+                                    class="form-select form-control"
+                                    onfocus='this.size=10;'
+                                    onblur='this.size=0;'
+                                    onchange='this.size=1;
+                                        this.blur();'>
+                                        <option value="">Département du point relais</option>
+                                        {% for DEPARTEMENT in DEPARTEMENTS %}
+                                        <option value="{{DEPARTEMENT.lib_dep}}">{{DEPARTEMENT.lib_dep}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <select required
+                                    name="commune"
+                                    class="form-select form-control"
+                                    onfocus='this.size=10;'
+                                    onblur='this.size=0;'
+                                    onchange='this.size=1;
+                                        this.blur();'>
+                                        <option value="">Commune du point relais</option>
+                                        {% for COMMUNE in COMMUNES %}
+                                        <option value="{{COMMUNE.lib_com}}">{{COMMUNE.lib_com}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <select required
+                                    name="arrondissement"
+                                    class="form-select form-control"
+                                    onfocus='this.size=10;'
+                                    onblur='this.size=0;'
+                                    onchange='this.size=1;
+                                        this.blur();'>
+                                        <option value="">Arrondissement du point relais</option>
+                                        {% for ARRONDISSEMENT in ARRONDISSEMENTS %}
+                                        <option value="{{ARRONDISSEMENT.lib_arrond}}">{{ARRONDISSEMENT.lib_arrond}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <select required
+                                    name="quartier"
+                                    class="form-select form-control"
+                                    onfocus='this.size=10;'
+                                    onblur='this.size=0;'
+                                    onchange='this.size=1;
+                                        this.blur();'>
+                                        <option value="">Quartier du point relais</option>
+                                        {% for QUARTIER in QUARTIERS %}
+                                        <option value="{{QUARTIER.id_quart}}">{{QUARTIER.lib_quart}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="col-md-12"> 
+                                    <textarea class="form-control" required
+                                        name="localisation"
+                                        id cols="30" rows="5"
+                                        placeholder="Localisation détaillé du point relais"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="text" required
+                                        name="identifiant"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="ID de connexion">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="password" required
+                                        name="password"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Mot de passe">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <input type="password" required
+                                        name="confirm_password"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Confirmer mot de passe">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <select required
+                                        name="status"
+                                        class="form-select form-control"
+                                        onfocus='this.size=10;'
+                                        onblur='this.size=0;'
+                                        onchange='this.size=1;
+                                        this.blur();'>
+                                        <option value="Actif">Actif</option>
+                                        <option value="Inactif">Inactif</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <input type="text" required
+                                        name="map_adresse"
+                                        class="form-control"
+                                        id="exampleFormControlInput1"
+                                        placeholder="Adresse Map">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button class="btn submit-btn">AJOUTER</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-12"></div>
+    </div>
+
+</div>
+{% endblock %}

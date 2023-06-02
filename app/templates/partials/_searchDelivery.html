@@ -1,0 +1,25 @@
+{% include "partials/flash-message-success.html" %}
+<!-- <form method="post" action="search" class="searching--block">
+    {% csrf_token %}
+    <span class="input-group mb-3">
+        {% csrf_token %}
+        <input type="text" name="searching" class="form-control"
+            placeholder="Numéro d'identification du colis"
+            aria-describedby="button-addon2">
+        <button class="btn" type="submit" id="button-addon2">Trouver</button>
+    </span>
+</form> -->
+
+<div class="searching--block">
+    <form method="post" action="/search" class>
+        {% csrf_token %}
+        <span class="input-group mb-3">
+            {% csrf_token %}
+            <input type="text" name="searching" class="form-control"
+                placeholder="Numéro d'identification du colis"
+                aria-describedby="button-addon2">
+            <button class="btn" type="submit" id="button-addon2">Trouver</button>
+        </span>
+    </form>
+    <a href="addDelivery" class="btn add--livreur text-center" >Ajouter un colis</a>
+</div>
