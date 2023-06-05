@@ -6,14 +6,13 @@
 
 <div class="container-fluid mb-5" id="body-content">
     <div class="row">
-        <h1 class="content-title">LES POINT RELAIS</h1>
+        <h1 class="content-title">LES POINT RELAIS </h1>
         <div class="col-md-3 col-sm-12"></div>
         <div class="col-md-6 col-sm-12">
             {% include "pointRelais/partials/_searchPr.html" %}
         </div>
         <div class="col-md-3 col-sm-12"></div>
     </div>
-
     <div class="row">
         <div class="col-md-12">
             {% if page_obj_pr %}
@@ -24,7 +23,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">NOM DU POINT RELAIS</th>
                             <th scope="col">Colis gérés</th>
-                            <th scope="col">COLIS A gérés</th>
+                            <th scope="col">COLIS A gérer(Affecté)</th>
                             <th scope="col">STATUS</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -38,7 +37,7 @@
                             <td>{{pr.colis_a_gerer}}</td>
                             <td class="text-success">{{pr.status}}</td>
                             <td>
-                                <a href="/pointRelais/{{pr.id}}/{{identifiant}}/detail" class="btn action">voir</a>
+                                <a href="/pointRelais/{{pr.id}}/detail" class="btn action">voir</a>
                             </td>
                         </tr>
                         {% endfor %}

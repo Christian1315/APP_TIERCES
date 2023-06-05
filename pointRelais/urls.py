@@ -2,9 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('<str:identifiant>/pointRelais',views.Login,name="pr_login"),
-    path('<id>/<str:identifiant>/update',views.UpdatePR,name="update"),
-    path('<id>/<str:identifiant>/detail',views.PrDetail,name="detail"),
-    path("<str:identifiant>/search",views.Search,name="search"),
+    path('',views.Index,name="index"),
+    path('login',views.Login,name="pr_login"),
+    path('logout',views.Logout,name="pr_logout"),
+    path('<id>/update',views.UpdatePR,name="update"),
+    path('<id>/detail',views.PrDetail,name="detail"),
+    path("search",views.Search,name="search"),
     path('addPr',views.AddPr,name="add-pr")
 ]

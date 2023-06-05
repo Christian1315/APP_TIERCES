@@ -18,6 +18,19 @@ __DELIVERY_STATUS = [
         'title':'Achéminement',
         'value':False
     },
+   {
+        'id':'is_reception',
+        'title':'Réception',
+        'value':False
+    },
+     {
+        'id':'is_termine',
+        'title':'Terminé',
+        'value':False
+    },
+]
+
+__DELIVERY_STATUS_PR = [
     {
         'id':'is_reception',
         'title':'Réception',

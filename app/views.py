@@ -4,10 +4,14 @@ from django.contrib import messages
 from django.shortcuts import render,redirect
 
 from _modules.getRequest import getData,postData,patchData
-from _modules.__env import __BASE_URL,__DELIVERY_STATUS
+from _modules.__env import __BASE_URL,__DELIVERY_STATUS,__DELIVERY_STATUS_PR
+
+from _modules.changeStatus import PR_COLIS_MANAGEMENT
 
 _BASE_URL = __BASE_URL
 DELIVERY_STATUS = __DELIVERY_STATUS
+DELIVERY_STATUS_PR = __DELIVERY_STATUS_PR
+
 
 def DELIVERY_RENDER(request,url,paginate=True):
     
@@ -90,27 +94,9 @@ def LivraisonDetail(request,id):
         'livraison':r.json(),
         'deliveryMans':DELIVERY_MANS,
         'deliveryStatus':DELIVERY_STATUS,
+        'deliveryStatus_pr':DELIVERY_STATUS_PR,#POUR LES POINTS RELAIS
     }
     return render(request,"livraison-voir.html",context)
-
-
-def LivraisonDetailForNoAdmin(request,id,identifiant):
-    
-    #RECUPERATION DE TOUT LES LIVREURS
-    url = _BASE_URL + "/livreur/getDeliveryMans"
-    DELIVERY_MANS = getData(url).json()    
-
-    #RECUPERATION DES LIVRAISONS DEPUIS L'API
-    url = _BASE_URL + "/delivery/%s/deliverie"%id
-    r = getData(url)
-    context ={
-        'identifiant':identifiant,
-        'livraison':r.json(),
-        'deliveryMans':DELIVERY_MANS,
-        'deliveryStatus':DELIVERY_STATUS,
-    }
-    return render(request,"livraison-voir.html",context)
-
 
 def Search(request):
     if request.user.is_authenticated:
@@ -137,11 +123,11 @@ def Search(request):
         return HOME_REDIRECTION(request,"Veuillez-vous connectez!!")
 
 def Affect_To_DeliveryMan(request,deliveryId):
-    identifiant = request.POST.get('identifiant')
+    if request.user.is_authenticated:#S'IL EST AUTHENTIFIE
+        if request.user.is_superuser or request.user.is_RelayPoint:#S'IL EST AUTHENTIFIE COMME UN PR OU UN ADMIN
 
-    if identifiant or request.user.is_authenticated:
-        if request.method == 'GET':
-            return redirect("/delivery/%s/update_delivery"%deliveryId)
+            if request.method == 'GET':
+                return redirect("/delivery/%s/update_delivery"%deliveryId)
 
         deliveryManId = request.POST.get("deliverymanId")
         url = _BASE_URL + "/delivery/%s/update_delivery"%deliveryId
@@ -152,7 +138,7 @@ def Affect_To_DeliveryMan(request,deliveryId):
         #ENREGISTREMENT DE L'UPDATE DE LA LIVRAISON DANS LA DB
         r = patchData(url,data)
 
-        if r.status_code == 200:
+        if r.status_code == 200 or r.status_code == 201:
             #RECUPERATION DE CE LIVREUR ET L'ACTULISATION DE SON **colis_a_gerer**
             url = _BASE_URL + "/livreur/%s/detail"%deliveryManId
             r = getData(url)
@@ -167,24 +153,21 @@ def Affect_To_DeliveryMan(request,deliveryId):
             res = patchData(_url,data)#ACTUALISATION DANS LA DB
 
             messages.success(request,"Livraison affectée avec succès!!")
-
-            if not request.user.is_authenticated:#S'IL N'EST PAS UN ADMIN(SOIT UN LIVREUR OU UN PR)
-                return redirect(f"/livraison/{deliveryId}/{identifiant}/detail")
-            return redirect("/livraison-show/%s"%deliveryId)
+        
+            return redirect(f"/livraison-show/{deliveryId}")
         else:
             messages.success(request,"Affectation échoué!!")
             if not request.user.is_authenticated:#S'IL N'EST PAS UN ADMIN(SOIT UN LIVREUR OU UN PR)
-                return redirect(f"/livraison/{deliveryId}/{identifiant}/detail")
+                return redirect(f"/livraison-show/{deliveryId}")
 
             return redirect("/livraison-show/%s"%deliveryId)
     else:
         return HOME_REDIRECTION(request,"Veuillez-vous connectez!!")
 
 def ChangeDeliveryStatut(request,deliveryId):
-    identifiant = request.POST.get('identifiant')
-    if identifiant or request.user.is_authenticated:
+    if request.user.is_authenticated:#S'IL EST AUTHENTIFIE
         delivery_status = request.POST.get("delivery_status")
-        
+
         #INITIALISATION DU DATA
         data = {
             "is_lancement":False,
@@ -206,44 +189,53 @@ def ChangeDeliveryStatut(request,deliveryId):
         elif delivery_status == "is_termine":
             data['is_termine'] = True
 
+        #VERIFIONS SI CE STATUS EXISTE DEJA POUR CE COLIS
+        colis_url = _BASE_URL + "/delivery/%s/deliverie"%deliveryId
+        colis = getData(colis_url).json()
+
+        if colis.get('%s'%delivery_status):#SI CE STATUS EXISTE DEJA
+            messages.error(request,"Ce colis est déjà à ce statut!")
+            return redirect("/livraison-show/%s"%deliveryId) 
+
         #ENREGISTREMENT DE L'UPDATE DANS LA DB
         url = _BASE_URL + "/delivery/%s/update_delivery"%deliveryId
-        delivery = patchData(url,data)
+        r = patchData(url,data)
+        delivery = r.json()
 
-        #GESTION DE LA STATUT **colis_geres** DU LIVREUR
-        delivery_received = delivery['is_reception']
-        deliveryMan = delivery['deliveryMan']
+        if r.status_code == 200 or r.status_code == 201:#STATUT CHANGE AVEC SUCCES!
+            #GESTION DE LA STATUT **colis_geres** DU LIVREUR
+            delivery_received = delivery.get('is_reception')
+            deliveryMan = delivery.get('deliveryMan')
 
+            delivery_termined = delivery.get('is_termine')
+            relay_point_id = delivery.get('pointRelais')
 
-        #GESTION DE LA STATUT **colis_geres** DU POINT RELAIS
-        delivery_received = delivery['is_reception']
-        relay_point = delivery['pointRelais']
+            #GESTION DE LA STATUT **colis_geres** DU PR
+            PR_COLIS_MANAGEMENT(delivery_termined,relay_point_id)
+            
+            # if deliveryMan: #SI UN LIVREUR LUI EST ASSOCIE
+            #     if delivery_received:#SI LE COLIS A ETE RECU
+            #         #PASSONS A L'ACTUALLISATION DE **colis_geres** DU LIVREUR DANS LA DB
+            #         __url = _BASE_URL + "/livreur/%s/detail"%deliveryMan
+            #         r = getData(__url)
+            #         delivery_man = r.json()
 
+            #         colis_geres = delivery_man['colis_geres']
+            #         data = {
+            #             'colis_geres':colis_geres+1 #INCREMENTATION DES COLIS A GERER POUR CE LIVREUR
+            #         }
+                    
+            #         _url = _BASE_URL + "/livreur/%s/update"%deliveryMan
+            #         res = patchData(_url,data)#ACTUALISATION DANS LA DB
+            
+            messages.success(request,"Statut changé avec succès!!")
+            return redirect("/livraison-show/%s"%deliveryId)
 
-
-        if deliveryMan: #SI UN LIVREUR LUI EST ASSOCIE
-            if delivery_received:#SI LE COLIS A ETE RECU
-                #PASSONS A L'ACTUALLISATION DE **colis_geres** DU LIVREUR DANS LA DB
-                __url = _BASE_URL + "/livreur/%s/detail"%deliveryMan
-                r = getData(__url)
-                delivery_man = r.json()
-
-                colis_geres = delivery_man['colis_geres']
-                data = {
-                    'colis_geres':colis_geres+1 #INCREMENTATION DES COLIS A GERER POUR CE LIVREUR
-                }
-                
-                _url = _BASE_URL + "/livreur/%s/update"%deliveryMan
-                res = patchData(_url,data)#ACTUALISATION DANS LA DB
-                
-        messages.success(request,"Statut changé avec succès!!")
-        
-        if not request.user.is_authenticated:#S'IL N'EST PAS UN ADMIN(SOIT UN LIVREUR OU UN PR)
-            return redirect(f"/livraison/{deliveryId}/{identifiant}/detail")
-        
-        return redirect("/livraison-show/%s"%deliveryId)
-    else:
-        return HOME_REDIRECTION(request,"Veuillez-vous connectez!!")
+    if request.user.is_RelayPoint:#S'IL EST UN PR
+        messages.error(request,"Veuillez-vous connectez!!")
+        return redirect('/pointRelais')
+    
+    return HOME_REDIRECTION(request,"Veuillez-vous connectez!!")
 
 def AddDelivery(request):
     if request.method == 'GET':

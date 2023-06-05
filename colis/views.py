@@ -3,7 +3,8 @@ from django.core.paginator import Paginator
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.shortcuts import render,redirect
-
+from django.contrib.auth import authenticate
+from myUser.models import MyUser
 from _modules.getRequest import getData,postData,patchData
 
 from _modules.__env import __BASE_URL,__DELIVERY_STATUS
@@ -11,7 +12,7 @@ from _modules.__env import __BASE_URL,__DELIVERY_STATUS
 _BASE_URL = __BASE_URL
 DELIVERY_STATUS = __DELIVERY_STATUS
 
-def COLIS_RENDER(request,url,delivery_man_id,paginate=True):
+def COLIS_RENDER(request,url,paginate=True):
     
     #RECUPERATION DES LIVRAISONS DEPUIS L'API
     r = getData(url)
@@ -27,52 +28,74 @@ def COLIS_RENDER(request,url,delivery_man_id,paginate=True):
         context ={
             'livraisons_count':colis_count,
             'page_obj_livraison' : page_obj_livraison,
-            'delivery_man_id':delivery_man_id,
         }
         return render(request,"colis/livraison.html",context)
     else:
         context ={
             'livraisons_count':colis_count,
             'livraison':colis,
-            'delivery_man_id':delivery_man_id,
         }
         return render(request,"colis/livraison.html",context)
 
-def HOME_REDIRECTION(request,delivery_man_id,message):
+def HOME_REDIRECTION(request,message):
     messages.error(request,message)
-    return redirect("/colis/deliveryMan/%s/deliveries"%delivery_man_id)
+    return redirect("/colis")
 
 def Index(request):
     return render(request,"colis/index.html")
 
 def _Login(request):
     if request.method == 'POST':
-        password = request.POST['password']
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        username = email
+
+        if not password:
+            messages.error(request,"Le mot de passe est réquis!!")
+            return redirect('/colis')
+        
+        if not email:
+            messages.error(request,"Le mail est réquis!!")
+            return redirect('/colis')
+
         url = _BASE_URL + "/livreur/%s/getByPass"%password
         r = getData(url)
         data = r.json() 
 
-        delivery_man_id = data.get('id')
-
-        if data.get('detail'):
+        if data.get('detail'):#CE LIVREUR N'EXISTE PAS
             messages.error(request,"Echec!! Vérifiez vos données puis essayez à nouveau")
             return redirect("/colis")
-        else:
-            return redirect('/colis/deliveryMan/%s/deliveries'%delivery_man_id)
+        else:#CE LIVREUR EXISTE
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                login(request, user)#ON LE CONNECTE DANS L'APP TIERCES
+                messages.success(request,"Vous êtes connecté avec succès")
+                return redirect('/colis/deliveryMan/%s/deliveries'%request.user.id)
+
+            messages.success(request,"Echec de connexion!")
+            return redirect('/colis')
     else:
-        return HOME_REDIRECTION(request,delivery_man_id,"Veuillez vous connecter!")
+        return HOME_REDIRECTION(request,"Veuillez vous connectez!")
 
-def Deliveries(request,delivery_man_id):
-    if not delivery_man_id:
-        return HOME_REDIRECTION(request,delivery_man_id,"Veuillez vous connecter!!")
-    
-    url = _BASE_URL + "/delivery/deliveryMan/%s/deliveries"%delivery_man_id
-    return COLIS_RENDER(request,url,delivery_man_id)
+def Logout(request):
+    logout(request)
+    messages.success(request,"Vous etes déconnecté(e)")
+    return redirect('/colis')
 
-def LivraisonDetail(request,id,delivery_man_id):
+def Deliveries(request):
+    if request.user.is_authenticated:
+        if request.user.is_DeliveryMan:
+            url = _BASE_URL + "/delivery/deliveryMan/%s/deliveries"%request.user.id
+            return COLIS_RENDER(request,url)
+    return HOME_REDIRECTION(request,"Veuillez vous connectez!!")
     
-    if not delivery_man_id:
-        return HOME_REDIRECTION(request,delivery_man_id,"Veuillez vous connecter!!")
+
+
+def LivraisonDetail(request,id):
+    if not request.user.is_authenticated:
+        if not request.user.is_DeliveryMan:
+            return HOME_REDIRECTION(request,"Veuillez vous connecter!!")
 
     #RECUPERATION DES LIVRAISONS DEPUIS L'API
     url = _BASE_URL + "/delivery/%s/deliverie"%id
@@ -80,21 +103,19 @@ def LivraisonDetail(request,id,delivery_man_id):
     context ={
         'livraison':r.json(),
         'deliveryStatus':DELIVERY_STATUS,
-        'delivery_man_id':delivery_man_id
     }
     return render(request,"colis/livraison-voir.html",context)
 
 def Search(request):
-    delivery_man_id = request.POST.get('delivery_man_id')
-
-    if not delivery_man_id:
-        return HOME_REDIRECTION(request,"Veuillez vous connectez!!")
+    if not request.user.is_authenticated:
+        if not request.user.is_DeliveryMan:
+            return HOME_REDIRECTION(request,"Veuillez vous connecter!!")
 
     searching = request.POST.get('searching')
     #VALIDATION DE L'INPUT DE RECHERCHE
     if searching =="":
         messages.error(request,"Ce champ est réquis!")
-        return redirect("/colis/deliveryMan/%s/deliveries"%delivery_man_id)
+        return redirect("/colis/deliveryMan/deliveries")
     
     #RECUPERATION DES LIVRAISONS DEPUIS L'API
     url = _BASE_URL + "/delivery/%s/search"%searching
@@ -103,15 +124,15 @@ def Search(request):
 
     if data.get('detail'):
         messages.success(request,"Aucun résultat trouvé")
-        return redirect("/colis/deliveryMan/%s/deliveries"%delivery_man_id)
+        return redirect("/colis/deliveryMan/deliveries")
     else:
         messages.success(request,"Résultats de la recherche")
-        return COLIS_RENDER(request,url,delivery_man_id,paginate=False)
+        return COLIS_RENDER(request,url,paginate=False)
 
-def ChangeDeliveryStatut(request,deliveryId,delivery_man_id):
-
-    if not delivery_man_id:
-        return HOME_REDIRECTION(request,delivery_man_id,"Veuillez vous connecter!!")
+def ChangeDeliveryStatut(request,deliveryId):
+    if not request.user.is_authenticated:
+        if not request.user.is_DeliveryMan:
+            return HOME_REDIRECTION(request,"Veuillez vous connecter!!")
 
     delivery_status = request.POST.get("delivery_status")
     url = _BASE_URL + "/delivery/%s/update_delivery"%deliveryId
@@ -169,4 +190,4 @@ def ChangeDeliveryStatut(request,deliveryId,delivery_man_id):
             res = patchData(_url,data)#ACTUALISATION DANS LA DB
             
     messages.success(request,"Statut changé avec succès!!")
-    return redirect(f"/colis/livraison-show/{deliveryId}/{delivery_man_id}")
+    return redirect(f"/colis/livraison-show/{deliveryId}")

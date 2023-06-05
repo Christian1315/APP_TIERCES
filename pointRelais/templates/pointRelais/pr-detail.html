@@ -13,7 +13,7 @@
             <h1 class="content-title _bar">DETAILS SUR LE point relais</h1>
             <div class="_content">
                 <div class="form">
-                    <form action="/pointRelais/{{ce_pointRelai.id}}/{{identifiant}}/update" method="POST">
+                    <form action="/pointRelais/{{ce_pointRelai.id}}/update" method="POST">
                         {% csrf_token %}
                         {% include "partials/flash-message-success.html" %}
                         <h3 class="title">Informations générales sur le livreur</h3>
@@ -116,7 +116,7 @@
                         </div>
 
                         <div class="text-center">
-                            {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
                             <button class="btn submit-btn">ENREGISTRER</button>
                             {% endif %}
                         </div>
@@ -174,7 +174,7 @@
 
                                     </td>
                                     <td>
-                                        <a href="/livraison/{{RP_DELIVERIE.id}}/{{identifiant}}/detail" class="btn action">voir</a>
+                                        <a href="/livraison-show/{{RP_DELIVERIE.id}}" class="btn action">voir</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

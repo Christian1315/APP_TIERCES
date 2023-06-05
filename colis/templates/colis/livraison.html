@@ -1,4 +1,4 @@
-{% extends 'colis/partials/_base-page.html' %}
+{% extends 'partials/_base-page.html' %}
 
 {% block title %}COLIS {% endblock %}
 
@@ -6,7 +6,7 @@
 
 <div class="container-fluid mb-5" id="body-content">
     <div class="row">
-        <h1 class="content-title">Tout les colis EN COURS</h1>
+        <h1 class="content-title">Tout les colis EN COURS </h1>
         <div class="col-md-3 col-sm-12"></div>
         <div class="col-md-6 col-sm-12">
             {% include "colis/partials/_searchDelivery.html" %}
@@ -50,7 +50,7 @@
                             </td>
                             <td>{{livraison.prenomDestinataire}} {{livraison.nomDestinataire}}</td>
                             <td>
-                                <a href="/colis/livraison-show/{{livraison.id}}/{{delivery_man_id}}" class="btn action">voir</a>
+                                <a href="/colis/livraison-show/{{livraison.id}}" class="btn action">voir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -135,7 +135,7 @@
                             </td>
                             <td>{{livraison.created_date}}</td>
                             <td>
-                                <a href="/colis/livraison-show/{{livraison.id}}/{{delivery_man_id}}"
+                                <a href="/colis/livraison-show/{{livraison.id}}"
                                     class="btn action">voir</a>
                             </td>
                         </tr>

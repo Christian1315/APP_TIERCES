@@ -4,9 +4,7 @@
 
 {% load get_livreur_by_id_tags %}
 
-
 {% block content %}
-
 <div class="container-fluid mb-5" id="body-content">
     <div class="row">
         <div class="col-md-2 col-sm-12"></div>
@@ -157,9 +155,6 @@
                                 <h1 class="_title">AFFECTER A UN LIVREUR</h1>
                                 <form method="post" action="/afect_to_deliveryMan/{{livraison.id}}">
                                     {% csrf_token %}
-                                    {% if identifiant %}
-                                    <input type="hidden" name="identifiant" value="{{identifiant}}">
-                                    {% endif %}
                                     <div class="input-block">
                                         <h3 class="__t">Choisissez le livreur</h3>
                                         {% if deliveryMans %}
@@ -211,9 +206,6 @@
                                 <h1 class="_title">STATUT DE LA LIVRAISON</h1>
                                 <form method="post" action="/change_delivery_statut/{{livraison.id}}">
                                     {% csrf_token %}
-                                    {% if identifiant %}
-                                    <input type="hidden" name="identifiant" value="{{identifiant}}">
-                                    {% endif %}
                                     <div class="input-block">
                                         <h3 class="__t">Statut de la livraison</h3>
                                         <select name="delivery_status"
@@ -234,9 +226,18 @@
                                                 {% else %}
                                                 <option selected>Sélection du statut de la livraison</option>
                                                 {% endif %}
-                                                {% for deliveryStatu in deliveryStatus %}
-                                                    <option value="{{deliveryStatu.id}}">{{deliveryStatu.title}}</option>
-                                                {% endfor %}
+
+                                                <!-- QUAND IL SAGIT D'UN POINT RELAIS -->
+                                                {% if user.is_RelayPoint %}
+                                                    {% for deliveryStatu in deliveryStatus_pr %}
+                                                        <option value="{{deliveryStatu.id}}">{{deliveryStatu.title}}</option>
+                                                    {% endfor %}
+                                                <!-- QUAND IL SAGIT D'UN POINT RELAIS -->
+                                                {% else %}
+                                                    {% for deliveryStatu in deliveryStatus %}
+                                                        <option value="{{deliveryStatu.id}}">{{deliveryStatu.title}}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                         </select>
                                     </div>
                                     <div class="text-center">

@@ -1,11 +1,11 @@
-{% extends 'partials/_base-page.html' %}
+{% extends 'colis/partials/_base-page.html' %}
 
 {% block title %}APP LIVREURS {% endblock %}
 
 {% block content %}
 <div class="container-fluid mb-5" id="body-content">
     <div class="row">
-        <h1 class="content-title">LES LIVREURS DISPONIBLES</h1>
+        <h1 class="content-title">LES LIVREURS DISPONIBLES </h1>
         <div class="col-md-2 col-sm-12"></div>
         <div class="col-md-8 col-sm-12">
             {% include "livreur/partials/_searchDeliveryMan.html" %}
@@ -125,15 +125,11 @@
                             <td>
                                 {% if delivery_man.colis_geres %}
                                 {{delivery_man.colis_geres}}
-                                {% else %}
-                                0
                                 {% endif %}
                             </td>
                             <td>
                                 {% if delivery_man.colis_a_gerer %}
                                 {{delivery_man.colis_a_gerer}}
-                                {% else %}
-                                0
                                 {% endif %}
                             </td>
                             <td class>

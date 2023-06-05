@@ -1,8 +1,9 @@
 {% include "partials/flash-message-success.html" %}
 
 <div class="searching--block">
-    {% if user.is_authenticated %}
-    <form method="post" action="/pointRelais/{{user}}/search" class>
+    <!-- QUAND L'ADMIN SE CONNECTE -->
+    {% if user.is_superuser %}
+    <form method="post" action="/pointRelais/search" class>
         {% csrf_token %}
         <span class="input-group mb-3">
             {% csrf_token %}
@@ -14,7 +15,8 @@
     </form>
     <a href="/pointRelais/addPr" class="btn add--livreur text-center" >Ajouter un un Point Relais</a>
     {% else %}
-    <form method="post" action="/pointRelais/{{identifiant}}/search" class>
+    <!-- QUAND LE PR SE CONNECTE -->
+    <form method="post" action="/pointRelais/search" class>
         {% csrf_token %}
         <span class="input-group mb-3">
             {% csrf_token %}

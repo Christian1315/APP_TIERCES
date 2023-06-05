@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.core.paginator import Paginator
 
+from myUser.models import MyUser
+
 from _modules.getRequest import getData,postData,patchData
 from _modules.__env import __BASE_URL,__DELIVERY_STATUS
 
@@ -49,7 +51,7 @@ def Index(request):
     
 def AddDeliveryMan(request):
     #SI LE USER DEMEURE CONNECTE
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and  request.user.is_superuser:
         if request.method == 'POST':
             nom = request.POST.get('nom')
             prenom = request.POST.get('prenom')
@@ -78,17 +80,30 @@ def AddDeliveryMan(request):
 
             url = _BASE_URL + "/livreur/create"
             r = postData(url,data)
-            
-            if r.status_code == 201:
+
+                
+            if r.status_code == 201 or r.status_code == 200:
+                #ENREGISTREMENT DU PR COMME UN USER DANS LES APPs TIERCES
+                livreur = MyUser.objects.create_user(
+                    username=email,#NOUS UTILISONS L'EMAIL DU LIVREUR COMME UN USERNAME
+                    password=password
+                )
+                livreur.is_DeliveryMan = True
+                livreur.save()
+
                 messages.success(request,"Livreur ajouté avec succès!!")
                 return DELIVERY_MAN_RENDER(request)
             else:
+                if r.json().get('password'):
+                    messages.success(request,"Ce mot de passe existe déjà")
+                    return DELIVERY_MAN_RENDER(request)
+
                 messages.error(request,"Echec d'ajout de livreur!!")
                 return DELIVERY_MAN_RENDER(request)
         else:
             return DELIVERY_MAN_RENDER(request)
     else:
-        return HOME_REDIRECTION(redirect,'Veuillez vous connectez!!')
+        return HOME_REDIRECTION(request,'Veuillez vous connectez!!')
 
 def Search(request):
     if request.user.is_authenticated:

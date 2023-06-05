@@ -10,7 +10,7 @@
         <div class="col-md-4 col-sm-6">
             {% include "partials/flash-message-danger.html" %}
 
-            <form action="/pointRelais/" method="POST">
+            <form action="/pointRelais/login" method="POST">
                 {% csrf_token %}
                 <div class="my-3">
                     <input type="text" name="identifiant" placeholder="Votre Identifiant" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">

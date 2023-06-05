@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     'app',
     'livreur',
     'colis',
-    'pointRelais'
+    'pointRelais',
+    'myUser',
 ]
 
 MIDDLEWARE = [
@@ -80,19 +82,20 @@ WSGI_APPLICATION = 'plateforme.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # },
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    # "default": {
-    #     "ENGINE": "django.db.backends.mysql",
-    #     "NAME": "fr_plateforme",
-    #     "USER": "root",
-    #     "HOST": "localhost",
-    #     'OPTIONS': {
-    #         'sql_mode': 'STRICT_ALL_TABLES',
-    #     },
-    # }
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "fr_plateforme",
+        "USER": "root",
+        "HOST": "localhost",
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',
+        },
+    }
 }
 
 
@@ -114,6 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "myUser.MyUser"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
